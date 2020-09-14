@@ -1,4 +1,7 @@
-// export
+//enum imports
+const AnimalTypeEnum = require("./enums/animalTypeEnum");
+
+//graphql imports
 const graphql = require("graphql");
 const {
   GraphQLObjectType,
@@ -12,18 +15,9 @@ const AnimalType = new GraphQLObjectType({
   fields: () => ({
     name: { type: GraphQLString },
     age: { type: GraphQLInt },
-    type: { type: animalTypeEnum },
+    type: { type: AnimalTypeEnum },
     breed: { type: GraphQLString }, // animal type
   }),
-});
-
-const animalTypeEnum = new GraphQLEnumType({
-  name: "animalType",
-  values: {
-    CAT: { value: 0 },
-    DOG: { value: 1 },
-    OTHER: { value: 2 },
-  },
 });
 
 module.exports = AnimalType

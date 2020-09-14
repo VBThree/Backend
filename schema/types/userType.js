@@ -1,6 +1,8 @@
+//model imports
 const ad = require("../../models/ad");
-const graphql = require("graphql");
 
+//graphql imports
+const graphql = require("graphql");
 const {
   GraphQLObjectType,
   GraphQLString,
