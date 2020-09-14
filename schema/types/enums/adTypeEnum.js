@@ -5,10 +5,10 @@ const { GraphQLEnumType } = graphql;
 const AdTypeEnum = new GraphQLEnumType({
     name: "AdTypeEnum",
     values: {
-        LOST: { value: 0 },
-        FOOD: { value: 1 },
-        OWNERSHIP: { value: 2 },
-        VACCINATION: { value: 3 },
+        Lost: { value: "Lost" },
+        Food: { value: "Food" },
+        Ownership: { value: "Ownership" },
+        Vaccination: { value: "Vaccination" },
     },
 });
 
