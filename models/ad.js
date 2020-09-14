@@ -14,10 +14,11 @@ const adSchema = new Schema({
         enum: ["Cat", "Dog", "Other"]
     },
     description: String,
-    location: {
-        type: String,
-        coordinates: [Number]
-    },
+    location: String,
+    // location: {
+    //     type: String,
+    //     coordinates: [Number]
+    // },
     attendantId: mongoose.SchemaTypes.ObjectId,
     status: {
         type: String,
@@ -25,6 +26,6 @@ const adSchema = new Schema({
     }
 })
 
-adSchema.index({ location: "2dsphere" });
+// adSchema.index({ location: "2dsphere" });
 
 module.exports = mongoose.model("Ad", adSchema)

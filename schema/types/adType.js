@@ -1,6 +1,6 @@
-import user from "../../models/user";
-import { UserType } from "./userType";
-import { AnimalType } from "./animalType";
+const user = require("../../models/user");
+const UserType = require("./userType")
+const AnimalType = require("./animalType")
 
 // export
 const graphql = require("graphql");
@@ -11,24 +11,27 @@ const {
   GraphQLEnumType
 } = graphql;
 
-export const AdType = new GraphQLObjectType({
+const AdType = new GraphQLObjectType({
   name: "Ad",
   fields: () => ({
     createdBy: {
-      type: UserType, // userType
+      type: UserType,
       resolve(parent, args) {
         return user.findById(parent.createdBy);
       },
     },
     date: { type: GraphQLString },
     type: { type: typeEnum },
-    animal: { type: AnimalType }, // animal type
+    animal: { type: AnimalType },
     animalType: { type: animalTypeEnum },
     description: { type: GraphQLString },
-    location: {
-      type: locationObj,
-    }, // location type
-    attendant: { type: UserType }, // user type
+    location: { type: GraphQLString }, 
+    attendant: { 
+      type: UserType,
+      resolve(parent, args) {
+        return user.findById(parent.attendantId);
+      }
+     },
     status: { type: statusEnum },
   }),
 });
@@ -44,7 +47,7 @@ const typeEnum = new GraphQLEnumType({
 });
 
 const animalTypeEnum = new GraphQLEnumType({
-  name: "animalType",
+  name: "animalTypeEnum",
   values: {
     CAT: { value: 0 },
     DOG: { value: 1 },
@@ -61,9 +64,12 @@ const statusEnum = new GraphQLEnumType({
   },
 });
 
-const locationObj = new GraphQLObjectType({
-  type: {
-    type: GraphQLString,
-  },
-  coordinates: { type: [GraphQLFloat] },
-});
+// const locationObj = new GraphQLObjectType({
+//   name:"locationType",
+//   fields: () => ({
+//     type: { type: GraphQLString },
+//     coordinates: { type: [GraphQLFloat] },
+//   })
+// });
+
+module.exports = AdType

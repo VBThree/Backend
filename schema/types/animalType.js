@@ -7,7 +7,7 @@ const {
   GraphQLEnumType,
 } = graphql;
 
-export const AnimalType = new GraphQLObjectType({
+const AnimalType = new GraphQLObjectType({
   name: "Animal",
   fields: () => ({
     name: { type: GraphQLString },
@@ -25,3 +25,5 @@ const animalTypeEnum = new GraphQLEnumType({
     OTHER: { value: 2 },
   },
 });
+
+module.exports = AnimalType
