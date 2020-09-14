@@ -6,7 +6,7 @@ const app = express()
 const schema = require("./schema/schema")
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/graphqldb', { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect('mongodb://localhost/hackathon', { useUnifiedTopology: true, useNewUrlParser: true });
 
 mongoose.connection.once("open", () => {
     console.log("connected to database")
