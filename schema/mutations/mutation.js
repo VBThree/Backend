@@ -51,9 +51,9 @@ const Mutation = new GraphQLObjectType({
           date: { type: GraphQLString },
           type: { type: AdTypeEnum },
           animalId: { type: GraphQLID },
-          animal: { type: AnimalTypeEnum },
+          animalType: { type: AnimalTypeEnum },
           description: { type: GraphQLString },
-          location: { type: GraphQLString },
+          coordinates: { type: GraphQLString },
           attendantId: { type: GraphQLID },
           status: { type: StatusEnum }
         },
@@ -63,9 +63,9 @@ const Mutation = new GraphQLObjectType({
             date: args.date,
             type: args.type,
             animalId: args.animalId,
-            animal: args.animal,
+            animalType: args.animalType,
             description: args.description,
-            location: args.location,
+            coordinates: args.coordinates,
             attendantId: args.attendantId,
             status: args.status
           })

@@ -16,7 +16,7 @@ const AnimalType = new GraphQLObjectType({
     name: { type: GraphQLString },
     age: { type: GraphQLInt },
     type: { type: AnimalTypeEnum },
-    breed: { type: GraphQLString }, // animal type
+    breed: { type: GraphQLString },
   }),
 });
 

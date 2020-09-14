@@ -1,6 +1,6 @@
 //model imports
 const user = require("../../models/user");
-
+const animal = require("../../models/animal");
 //type imports
 const UserType = require("./userType")
 const AnimalType = require("./animalType")
@@ -29,10 +29,15 @@ const AdType = new GraphQLObjectType({
     },
     date: { type: GraphQLString },
     type: { type: AdTypeEnum },
-    animal: { type: AnimalType },
+    animal: { 
+      type: AnimalType,
+      resolve(parent, args) {
+        return animal.findById(parent.animalId);
+      } 
+    },
     animalType: { type: AnimalTypeEnum },
     description: { type: GraphQLString },
-    location: { type: GraphQLString }, 
+    coordinates: { type: GraphQLString }, 
     status: { type: StatusEnum },
     attendant: {
       type: UserType,

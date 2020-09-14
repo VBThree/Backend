@@ -9,12 +9,12 @@ const adSchema = new Schema({
         enum: ["Lost", "Food", "Ownership", "Vaccination"]
     },
     animalId: mongoose.SchemaTypes.ObjectId,
-    animal: {
+    animalType: {
         type: String,
         enum: ["Cat", "Dog", "Other"]
     },
     description: String,
-    location: String,
+    coordinates: String,
     // location: {
     //     type: String,
     //     coordinates: [Number]
