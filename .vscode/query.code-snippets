@@ -1,0 +1,26 @@
+{
+	"create type": {
+		"prefix": "gqlt",
+		"body": [
+			"const $1 = new GraphQLObjectType({",
+			"    name:\"$2\",",
+			"    fields:() => ({",
+			"        $3",
+			"    })",
+			"})"
+		],
+		"description": ""
+	},
+	"create relation": {
+		"prefix": "gqlr",
+		"body": [
+			"$1: {",
+			"    type: new GraphQLList($2),",
+			"    resolve(parent,args){",
+			"        return $3",
+			"    }",
+			"}",
+		],
+		"description": ""
+	}
+}
