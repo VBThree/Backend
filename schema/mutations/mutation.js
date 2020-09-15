@@ -18,11 +18,12 @@ const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
 const graphql = require("graphql");
 const { GraphQLString, GraphQLObjectType, GraphQLList, GraphQLFloat, GraphQLID } = graphql;
 const GraphQLDate = require('graphql-date')
+const bcrypt = require('bcrypt')
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    addUser: {
+    register: {
       type: UserType,
       args: {
         name: { type: GraphQLString },
@@ -32,12 +33,12 @@ const Mutation = new GraphQLObjectType({
         birthday: { type: GraphQLString },
         rating: { type: GraphQLFloat },
       },
-      resolve(parent, args) {
+      async resolve(parent, args) {
         let _user = new user({
           name: args.name,
           email: args.email,
           phone: args.phone,
-          password: args.password,
+          password: await bcrypt.hash(args.password,12),
           birthday: args.birthday,
           rating: args.rating,
         });
