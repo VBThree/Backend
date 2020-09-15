@@ -12,7 +12,7 @@ const StatusEnum = require("./enums/statusEnum");
 
 //graphql imports
 const graphql = require("graphql");
-const { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLFloat } = graphql;
+const { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLFloat, GraphQLList } = graphql;
 
 const AdType = new GraphQLObjectType({
   name: "Ad",
@@ -34,7 +34,6 @@ const AdType = new GraphQLObjectType({
     },
     animalType: { type: AnimalTypeEnum },
     description: { type: GraphQLString },
-    coordinates: { type: GraphQLString },
     status: { type: StatusEnum },
     attendant: {
       type: UserType,
@@ -42,16 +41,16 @@ const AdType = new GraphQLObjectType({
         return user.findById(parent.attendantId);
       },
     },
-    location: locationObj,
+    coordinates: new GraphQLList(GraphQLFloat)
   }),
 });
 
-const locationObj = new GraphQLObjectType({
+/* const locationObj = new GraphQLObjectType({
   name: "locationType",
   fields: () => ({
     type: { type: GraphQLString },
     coordinates: { type: [GraphQLFloat] },
   }),
-});
+}); */
 
 module.exports = AdType;
