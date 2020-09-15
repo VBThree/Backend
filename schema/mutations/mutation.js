@@ -1,15 +1,18 @@
 //model imports
 const ad = require("../../models/ad");
 const user = require("../../models/user");
+const animal = require("../../models/animal");
 
 //type imports
 const AdType = require("../types/adType");
 const UserType = require("../types/userType");
+const AnimalType = require("../types/animalType");
 
 //enum imports
 const AdTypeEnum = require("../types/enums/adTypeEnum")
 const AnimalTypeEnum = require("../types/enums/animalTypeEnum")
 const StatusEnum = require("../types/enums/statusEnum")
+const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
 
 //graphql imports
 const graphql = require("graphql");
@@ -71,7 +74,27 @@ const Mutation = new GraphQLObjectType({
           })
           return _ad.save()
         }
-        } 
+      },
+      addAnimal: {
+        type: AnimalType,
+        args: {
+          name: {type: GraphQLString },
+          age: {type: GraphQLFloat },
+          type: {type: AnimalTypeEnum },
+          breed: {type: GraphQLString },
+          gender: {type: AnimalGenderEnum }
+        },
+        resolve(parent, args) {
+          let _animal = new animal({
+            name: args.name,
+            age: args.age,
+            type: args.type,
+            breed: args.breed,
+            gender: args.gender
+          })
+          return _animal.save()
+        }
+      },
     }
 })
 
