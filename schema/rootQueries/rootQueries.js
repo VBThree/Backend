@@ -10,7 +10,7 @@ const UserType = require("../types/userType");
 
 //graphql imports
 const graphql = require("graphql");
-const { GraphQLObjectType, GraphQLList } = graphql;
+const { GraphQLObjectType, GraphQLList, GraphQLID } = graphql;
 
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -33,6 +33,33 @@ const RootQuery = new GraphQLObjectType({
           return animal.find({})
         }
       },
+      getAd: {
+        type: AdType,
+        args: { 
+          id: { type: GraphQLID }
+        },
+        resolve(parent, args) {
+          return ad.findById(args.id)
+        }
+      },
+      getUser: {
+        type: UserType,
+        args: {
+          id: { type: GraphQLID }
+        },
+        resolve(parent, args) {
+          return user.findById(args.id)
+        }
+      },
+      getAnimal: {
+        type: AnimalType,
+        args: {
+          id: { type: GraphQLID }
+        },
+        resolve(parent, args) {
+          return animal.findById(args.id)
+        }
+      }
     }
 })
 
