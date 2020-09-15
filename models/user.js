@@ -3,9 +3,15 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema({ 
     name: String,
-    email: String,
+    email: {
+        type:String,
+        unique: true
+    },
     password: String,
-    phone: String,
+    phone: {
+        type: String,
+        unique: true
+    },
     birthday: Date,
     rating: Number
 })
