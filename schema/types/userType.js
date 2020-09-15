@@ -10,6 +10,7 @@ const {
   GraphQLList,
   GraphQLFloat
 } = graphql;
+const GraphQLDate = require('graphql-date')
 
 const UserType = new GraphQLObjectType({
   name: "User",
@@ -19,7 +20,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     phone: { type: GraphQLString },
     password: { type: GraphQLString },
-    birthday: { type: GraphQLString },
+    birthday: { type: GraphQLDate },
     rating: { type: GraphQLFloat },
     ads: {
       type: new GraphQLList(require("./adType")),

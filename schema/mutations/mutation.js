@@ -13,6 +13,7 @@ const AdTypeEnum = require("../types/enums/adTypeEnum");
 const AnimalTypeEnum = require("../types/enums/animalTypeEnum");
 const StatusEnum = require("../types/enums/statusEnum");
 const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
+const GraphQLDate = require('graphql-date')
 
 //graphql imports
 const graphql = require("graphql");

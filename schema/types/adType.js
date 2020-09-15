@@ -24,7 +24,7 @@ const AdType = new GraphQLObjectType({
         return user.findById(parent.createdBy);
       },
     },
-    date: { type: GraphQLString },
+    date: { type: GraphQLDate },
     type: { type: AdTypeEnum },
     animal: {
       type: AnimalType,
