@@ -13,6 +13,7 @@ const StatusEnum = require("./enums/statusEnum");
 //graphql imports
 const graphql = require("graphql");
 const { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLFloat, GraphQLList } = graphql;
+const GraphQLDate = require("graphql-date");
 
 const AdType = new GraphQLObjectType({
   name: "Ad",

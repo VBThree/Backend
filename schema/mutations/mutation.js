@@ -13,11 +13,12 @@ const AdTypeEnum = require("../types/enums/adTypeEnum");
 const AnimalTypeEnum = require("../types/enums/animalTypeEnum");
 const StatusEnum = require("../types/enums/statusEnum");
 const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
-const GraphQLDate = require('graphql-date')
 
 //graphql imports
 const graphql = require("graphql");
 const { GraphQLString, GraphQLObjectType, GraphQLList, GraphQLFloat, GraphQLID } = graphql;
+const GraphQLDate = require('graphql-date')
+
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
@@ -47,7 +48,7 @@ const Mutation = new GraphQLObjectType({
       type: AdType,
       args: {
         createdBy: { type: GraphQLID },
-        date: { type: GraphQLString },
+        date: { type: GraphQLDate },
         type: { type: AdTypeEnum },
         animalId: { type: GraphQLID },
         animalType: { type: AnimalTypeEnum },
