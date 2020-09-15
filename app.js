@@ -8,6 +8,8 @@ const schema = require("./schema/schema")
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/hackathon', { useUnifiedTopology: true, useNewUrlParser: true });
 
+mongoose.set('useCreateIndex', true);
+
 mongoose.connection.once("open", () => {
     console.log("connected to database")
 })
