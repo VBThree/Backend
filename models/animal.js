@@ -9,6 +9,10 @@ const animalSchema = new Schema({
         enum: ["Cat", "Dog", "Other"]
     },
     breed: String,
+    gender: {
+        type: String,
+        enum: ["Female", "Male"]
+    },
 })
 
 module.exports = mongoose.model("Animal", animalSchema)
