@@ -23,6 +23,24 @@ const bcrypt = require('bcrypt')
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
+    login:{
+      type: UserType,
+      args:{
+        email: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      async resolve(parent,args){
+        const _user = await user.findOne({email: args.email}).exec()
+        if(!_user){
+          throw new Error("Wrong Credentials")
+        }
+        const valid = await bcrypt.compare(args.password, _user.password)
+        if(!valid){
+          throw new Error("Wrong Credentials")
+        }
+        return _user
+      }
+    },
     register: {
       type: UserType,
       args: {
