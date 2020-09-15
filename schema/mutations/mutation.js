@@ -18,13 +18,18 @@ const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
 const graphql = require("graphql");
 const { GraphQLString, GraphQLObjectType, GraphQLList, GraphQLFloat, GraphQLID } = graphql;
 const GraphQLDate = require('graphql-date')
+
+//authentication imports
 const bcrypt = require('bcrypt')
+const jwt = require("jsonwebtoken")
+
+const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD" //openssl rand 256 | base64
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
     login:{
-      type: UserType,
+      type: GraphQLString,
       args:{
         email: { type: GraphQLString },
         password: { type: GraphQLString }
@@ -38,7 +43,9 @@ const Mutation = new GraphQLObjectType({
         if(!valid){
           throw new Error("Wrong Credentials")
         }
-        return _user
+
+        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: '1y' })
+        return token;
       }
     },
     register: {
