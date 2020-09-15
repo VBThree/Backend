@@ -15,8 +15,13 @@ const adSchema = new Schema({
   },
   description: String,
   location: {
-    type: String,
-    coordinates: [Number],
+    type: {
+      type: String,
+      enum: ['Point']
+    },
+    coordinates: {
+      type: [Number]
+    }
   },
   attendantId: mongoose.SchemaTypes.ObjectId,
   status: {

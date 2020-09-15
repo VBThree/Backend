@@ -53,7 +53,9 @@ const Mutation = new GraphQLObjectType({
         description: { type: GraphQLString },
         attendantId: { type: GraphQLID },
         status: { type: StatusEnum },
-        coordinates: new GraphQLList(GraphQLFloat)
+        coordinates: {
+          type: GraphQLList(GraphQLFloat)
+        }
       },
       resolve(parent, args) {
         let _ad = new ad({

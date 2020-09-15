@@ -41,16 +41,13 @@ const AdType = new GraphQLObjectType({
         return user.findById(parent.attendantId);
       },
     },
-    coordinates: new GraphQLList(GraphQLFloat)
+    coordinates: {
+      type: GraphQLList(GraphQLFloat),
+      resolve(parent, args){
+        return parent.location.coordinates;
+      }
+    }
   }),
 });
-
-/* const locationObj = new GraphQLObjectType({
-  name: "locationType",
-  fields: () => ({
-    type: { type: GraphQLString },
-    coordinates: { type: [GraphQLFloat] },
-  }),
-}); */
 
 module.exports = AdType;
