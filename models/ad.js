@@ -1,31 +1,35 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const adSchema = new Schema({ 
-    createdBy: mongoose.SchemaTypes.ObjectId,
-    date: Date,
+const adSchema = new Schema({
+  createdBy: mongoose.SchemaTypes.ObjectId,
+  date: Date,
+  type: {
+    type: String,
+    enum: ["Lost", "Food", "Ownership", "Vaccination"],
+  },
+  animalId: mongoose.SchemaTypes.ObjectId,
+  animalType: {
+    type: String,
+    enum: ["Cat", "Dog", "Other"],
+  },
+  description: String,
+  location: {
     type: {
-        type: String,
-        enum: ["Lost", "Food", "Ownership", "Vaccination"]
+      type: String,
+      enum: ['Point']
     },
-    animalId: mongoose.SchemaTypes.ObjectId,
-    animalType: {
-        type: String,
-        enum: ["Cat", "Dog", "Other"]
-    },
-    description: String,
-    coordinates: String,
-    // location: {
-    //     type: String,
-    //     coordinates: [Number]
-    // },
-    attendantId: mongoose.SchemaTypes.ObjectId,
-    status: {
-        type: String,
-        enum: ["Active", "inProgress", "Done"]
+    coordinates: {
+      type: [Number]
     }
-})
+  },
+  attendantId: mongoose.SchemaTypes.ObjectId,
+  status: {
+    type: String,
+    enum: ["Active", "inProgress", "Done"],
+  },
+});
 
-// adSchema.index({ location: "2dsphere" });
+adSchema.index({ location: "2dsphere" });
 
-module.exports = mongoose.model("Ad", adSchema)
+module.exports = mongoose.model("Ad", adSchema);
