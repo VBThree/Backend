@@ -13,6 +13,7 @@ const StatusEnum = require("./enums/statusEnum")
 //graphql imports
 const graphql = require("graphql");
 const {
+  GraphQLID,
   GraphQLObjectType,
   GraphQLString,
   GraphQLFloat,
@@ -21,6 +22,7 @@ const {
 const AdType = new GraphQLObjectType({
   name: "Ad",
   fields: () => ({
+    id: { type: GraphQLID },
     createdBy: {
       type: UserType,
       resolve(parent, args) {
