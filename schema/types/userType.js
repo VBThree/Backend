@@ -19,6 +19,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     phone: { type: GraphQLString },
     password: { type: GraphQLString },
+    birthday: { type: GraphQLString },
     rating: { type: GraphQLFloat },
     ads: {
       type: new GraphQLList(require("./adType")),

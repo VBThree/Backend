@@ -33,6 +33,7 @@ const Mutation = new GraphQLObjectType({
           email: { type: GraphQLString },
           phone: { type: GraphQLString },
           password: { type: GraphQLString },
+          birthday: {type: GraphQLString },
           rating: { type: GraphQLFloat },
         },
         resolve(parent, args) {
@@ -42,6 +43,7 @@ const Mutation = new GraphQLObjectType({
             email: args.email,
             phone: args.phone,
             password: args.password,
+            birthday: args.birthday,
             rating: args.rating
           })
           return _user.save()
