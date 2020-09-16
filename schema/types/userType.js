@@ -3,14 +3,15 @@ const ad = require("../../models/ad");
 
 //graphql imports
 const graphql = require("graphql");
+const GraphQLDate = require('graphql-date')
 const {
   GraphQLObjectType,
   GraphQLString,
   GraphQLID,
   GraphQLList,
-  GraphQLFloat
+  GraphQLFloat,
+  GraphQLInt
 } = graphql;
-const GraphQLDate = require('graphql-date')
 
 const UserType = new GraphQLObjectType({
   name: "User",
@@ -22,6 +23,18 @@ const UserType = new GraphQLObjectType({
     password: { type: GraphQLString },
     birthday: { type: GraphQLDate },
     rating: { type: GraphQLFloat },
+    publishedCount: {
+      type: GraphQLInt,
+      async resolve(parent, args) {
+        return await ad.find({ createdBy: parent.id }).countDocuments()
+      }
+    },
+    resolvedCount: {
+      type: GraphQLInt,
+      async resolve(parent, args) {
+        return await ad.find({ attendantId: parent.id }).countDocuments()
+      }
+    },
     ads: {
       type: new GraphQLList(require("./adType")),
       resolve(parent, args) {
