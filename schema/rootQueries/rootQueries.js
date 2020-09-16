@@ -42,6 +42,15 @@ const RootQuery = new GraphQLObjectType({
         resolve(parent, args) {
           return user.findById(args.id)
         }
+      },
+      me: {
+        type: UserType,
+        resolve(parent, args, { userToken }) {
+          if(!userToken){
+            throw new Error("Unauthorized Access")
+          } 
+          return user.findById(userToken.id)         
+        }
       }
     }
 })
