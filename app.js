@@ -6,6 +6,7 @@ const app = express()
 const schema = require("./schema/schema")
 const config = require("./config")
 const mongoose = require('mongoose');
+
 mongoose.connect(config.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true });
 
 mongoose.set('useCreateIndex', true);

@@ -27,7 +27,7 @@ const GraphQLDate = require("graphql-date");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const config = require("../../config")
+const config = require("../../config");
 const SECRET = config.SECRET; //openssl rand 256 | base64
 
 const Mutation = new GraphQLObjectType({
@@ -186,12 +186,14 @@ const Mutation = new GraphQLObjectType({
         }
 
         var smtpTransport = nodemailer.createTransport(
-          "smtps://vbthreehackathon@gmail.com:" +
-            encodeURIComponent("VBThree!20hack") +
+          "smtps://" +
+            config.SMTP_EMAIL +
+            ":" +
+            encodeURIComponent(config.SMTP_PASS) +
             "@smtp.gmail.com:465"
         );
         var mailOptions = {
-          from: "vbthreehackathon@gmail.com",
+          from: config.SMTP_EMAIL,
           to: _user.email,
           subject: "Reset Password",
           text: `Your token is ${resetToken}`,
@@ -241,24 +243,23 @@ const Mutation = new GraphQLObjectType({
       },
       async resolve(parent, args) {
         let _user = await user.findById(args.id).exec();
-        bcrypt.compare(
-          args.newPassword,
-          _user.password,
-          async function (err, result) {
-            if(result==true){
-              throw new Error("New pass cant be old pass");
-            } else{
-              let done = await user.findByIdAndUpdate(args.id, {
-                password: await bcrypt.hash(args.newPassword, 12),
-              });
-              if (done) {
-                return "Successfull";
-              } else {
-                throw new Error("Some error occured");
-              }
+        bcrypt.compare(args.newPassword, _user.password, async function (
+          err,
+          result
+        ) {
+          if (result == true) {
+            throw new Error("New pass cant be old pass");
+          } else {
+            let done = await user.findByIdAndUpdate(args.id, {
+              password: await bcrypt.hash(args.newPassword, 12),
+            });
+            if (done) {
+              return "Successfull";
+            } else {
+              throw new Error("Some error occured");
             }
           }
-        );
+        });
       },
     },
   },

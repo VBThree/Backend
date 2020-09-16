@@ -15,7 +15,8 @@ if (process.env.NODE_ENV !== "production") {
 const config = {
   SECRET: process.env.SECRET,
   MONGODB_URI: process.env.MONGODB_URI, //your mongodb url
-  HOST_NAME: process.env.HOST_NAME // example hostname "localhost"
+  SMTP_EMAIL: process.env.SMTP_EMAIL, // example hostname "localhost"
+  SMTP_PASS: process.env.SMTP_PASS
 };
 
 module.exports = config;
