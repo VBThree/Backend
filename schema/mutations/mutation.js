@@ -206,11 +206,7 @@ const Mutation = new GraphQLObjectType({
       args: {
         email: { type: GraphQLString },
       },
-      async resolve(parent, args, { userToken }) {
-        if (!userToken) {
-          throw new Error("Unauthorized Access")
-        } 
-
+      async resolve(parent, args) {
         const _user = await user.findOne({ email: args.email }).exec()
 
         if (!_user) {
@@ -259,41 +255,30 @@ const Mutation = new GraphQLObjectType({
       args: {
         resetToken: { type: GraphQLString }
       },
-      async resolve(parent, args, { userToken }) {
-        if (!userToken) {
-          throw new Error("Unauthorized Access")
-        } 
-        const _user = await user.findById(userToken.id)
-        if (!_user) {
-          throw new Error("No user with this email");
-        }
+      async resolve(parent, args) {
 
-        if (_user.resetToken == args.resetToken) {
-          let now = new Date();
-          if (now < _user.expiryDate) {
-            let done = await user.findByIdAndUpdate(_user.id, {
-              resetToken: undefined,
-              expiryDate: undefined,
-            });
-            return "Successfull";
-          } else {
-            throw new Error("Token Expired");
-          }
-        } else {
+        const _user = await user.findOne({ resetToken: args.resetToken }).exec()
+
+        if (!_user) {
           throw new Error("Wrong Token");
         }
+
+        return "Successfull";
       },
     },
     resetPassword: {
       type: GraphQLString,
       args: {
+        resetToken: { type: GraphQLString },
         newPassword: { type: GraphQLString },
       },
-      async resolve(parent, args, { userToken }) {
-        if (!userToken) {
-          throw new Error("Unauthorized Access")
-        }                               
-        let _user = await user.findById(userToken.id).exec();
+      async resolve(parent, args) {
+        const _user = await user.findOne({ resetToken: args.resetToken }).exec()
+
+        if (!_user) {
+          throw new Error("Wrong Token");
+        }
+
         bcrypt.compare(args.newPassword, _user.password, async function (
           err,
           result
@@ -301,8 +286,10 @@ const Mutation = new GraphQLObjectType({
           if (result == true) {
             throw new Error("New pass cant be old pass");
           } else {
-            let done = await user.findByIdAndUpdate(userToken.id, {
+            let done = await user.findByIdAndUpdate(_user.id, {
               password: await bcrypt.hash(args.newPassword, 12),
+              resetToken: undefined,
+              expiryDate: undefined
             });
             if (done) {
               return "Successfull";
