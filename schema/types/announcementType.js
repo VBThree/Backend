@@ -1,13 +1,12 @@
 //model imports
 const user = require("../../models/user");
-const animal = require("../../models/animal");
 //type imports
 const UserType = require("./userType");
-const AnimalType = require("./animalType");
 
 //enum imports
-const AdTypeEnum = require("./enums/adTypeEnum");
-const AnimalTypeEnum = require("./enums/animalTypeEnum");
+const AnnouncementTypeEnum = require("./enums/announcementTypeEnum");
+const AnimalSpeciesEnum = require("./enums/animalSpeciesEnum");
+const AnimalGenderEnum = require("./enums/animalGenderEnum");
 const StatusEnum = require("./enums/statusEnum");
 
 //graphql imports
@@ -15,8 +14,8 @@ const graphql = require("graphql");
 const { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLFloat, GraphQLList } = graphql;
 const GraphQLDate = require("graphql-date");
 
-const AdType = new GraphQLObjectType({
-  name: "Ad",
+const AnnouncementType = new GraphQLObjectType({
+  name: "Announcement",
   fields: () => ({
     id: { type: GraphQLID },
     createdBy: {
@@ -26,14 +25,11 @@ const AdType = new GraphQLObjectType({
       },
     },
     date: { type: GraphQLDate },
-    type: { type: AdTypeEnum },
-    animal: {
-      type: AnimalType,
-      resolve(parent, args) {
-        return animal.findById(parent.animalId);
-      },
-    },
-    animalType: { type: AnimalTypeEnum },
+    type: { type: AnnouncementTypeEnum },
+    species: { type: AnimalSpeciesEnum },
+    gender: { type: AnimalGenderEnum },
+    breed: { type: GraphQLString },
+    age: { type: GraphQLFloat },
     description: { type: GraphQLString },
     status: { type: StatusEnum },
     attendant: {
@@ -51,4 +47,4 @@ const AdType = new GraphQLObjectType({
   }),
 });
 
-module.exports = AdType;
+module.exports = AnnouncementType;

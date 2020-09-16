@@ -1,11 +1,9 @@
 //model imports
-const ad = require("../../models/ad");
-const animal = require("../../models/animal");
+const announcement = require("../../models/announcement");
 const user = require("../../models/user");
 
 //type imports
-const AdType = require("../types/adType");
-const AnimalType = require("../types/animalType");
+const AnnouncementType = require("../types/announcementType");
 const UserType = require("../types/userType");
 
 //graphql imports
@@ -15,10 +13,10 @@ const { GraphQLObjectType, GraphQLList, GraphQLID } = graphql;
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
     fields:{
-      ads: {
-        type: new GraphQLList(AdType),
+      announcements: {
+        type: new GraphQLList(AnnouncementType),
         resolve(parent, args) {
-          return ad.find({})
+          return announcement.find({})
         }
       },
       users: {
@@ -27,19 +25,13 @@ const RootQuery = new GraphQLObjectType({
           return user.find({})
         }
       },
-      animals: {
-        type: new GraphQLList(AnimalType),
-        resolve(parent, args) {
-          return animal.find({})
-        }
-      },
-      getAd: {
-        type: AdType,
+      getAnnouncement: {
+        type: AnnouncementType,
         args: { 
           id: { type: GraphQLID }
         },
         resolve(parent, args) {
-          return ad.findById(args.id)
+          return announcement.findById(args.id)
         }
       },
       getUser: {
@@ -49,15 +41,6 @@ const RootQuery = new GraphQLObjectType({
         },
         resolve(parent, args) {
           return user.findById(args.id)
-        }
-      },
-      getAnimal: {
-        type: AnimalType,
-        args: {
-          id: { type: GraphQLID }
-        },
-        resolve(parent, args) {
-          return animal.findById(args.id)
         }
       }
     }
