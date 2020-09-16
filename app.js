@@ -16,7 +16,7 @@ mongoose.connection.once("open", () => {
     console.log("connected to database")
 })
 
-const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD"
+const SECRET = config.SECRET;
 
 const auth = async (req) => {
     const token = req.headers.authorization
