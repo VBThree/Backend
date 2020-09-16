@@ -2,8 +2,8 @@
 const graphql = require("graphql");
 const { GraphQLEnumType } = graphql;
 
-const AnimalTypeEnum = new GraphQLEnumType({
-    name: "AnimalTypeEnum",
+const AnimalSpeciesEnum = new GraphQLEnumType({
+    name: "AnimalSpeciesEnum",
     values: {
         Cat: { value: "Cat" },
         Dog: { value: "Dog" },
@@ -11,4 +11,4 @@ const AnimalTypeEnum = new GraphQLEnumType({
     },
 });
 
-module.exports = AnimalTypeEnum
+module.exports = AnimalSpeciesEnum

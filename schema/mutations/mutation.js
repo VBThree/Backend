@@ -1,16 +1,14 @@
 //model imports
-const ad = require("../../models/ad");
+const announcement = require("../../models/announcement");
 const user = require("../../models/user");
-const animal = require("../../models/animal");
 
 //type imports
-const AdType = require("../types/adType");
+const AnnouncementType = require("../types/announcementType");
 const UserType = require("../types/userType");
-const AnimalType = require("../types/animalType");
 
 //enum imports
-const AdTypeEnum = require("../types/enums/adTypeEnum");
-const AnimalTypeEnum = require("../types/enums/animalTypeEnum");
+const AnnouncementTypeEnum = require("../types/enums/announcementTypeEnum");
+const AnimalSpeciesEnum = require("../types/enums/animalSpeciesEnum");
 const StatusEnum = require("../types/enums/statusEnum");
 const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
 
@@ -53,74 +51,58 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: { type: GraphQLString },
         email: { type: GraphQLString },
-        phone: { type: GraphQLString },
         password: { type: GraphQLString },
-        birthday: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        birthday: { type: GraphQLDate },
         rating: { type: GraphQLFloat },
       },
       async resolve(parent, args) {
         let _user = new user({
           name: args.name,
           email: args.email,
+          password: await bcrypt.hash(args.password, 12),
           phone: args.phone,
-          password: await bcrypt.hash(args.password,12),
           birthday: args.birthday,
           rating: args.rating,
         });
         return _user.save();
       },
     },
-    addAd: {
-      type: AdType,
+    addAnnouncement: {
+      type: AnnouncementType,
       args: {
         createdBy: { type: GraphQLID },
         date: { type: GraphQLDate },
-        type: { type: AdTypeEnum },
-        animalId: { type: GraphQLID },
-        animalType: { type: AnimalTypeEnum },
+        type: { type: AnnouncementTypeEnum },
+        species: { type: AnimalSpeciesEnum },
+        gender: { type: AnimalGenderEnum },
+        breed: { type: GraphQLString },
+        age: { type: GraphQLFloat },
         description: { type: GraphQLString },
-        attendantId: { type: GraphQLID },
         status: { type: StatusEnum },
+        attendantId: { type: GraphQLID },
         coordinates: {
           type: GraphQLList(GraphQLFloat)
         }
       },
       resolve(parent, args) {
-        let _ad = new ad({
+        let _announcement = new announcement({
           createdBy: args.createdBy,
           date: args.date,
           type: args.type,
-          animalId: args.animalId,
-          animalType: args.animalType,
+          species: args.species,
+          gender: args.gender,
+          breed: args.breed,
+          age: args.age,
           description: args.description,
+          status: args.status,
+          attendantId: args.attendantId,
           location: {
             type: "Point",
             coordinates: args.coordinates,
           },
-          attendantId: args.attendantId,
-          status: args.status,
         });
-        return _ad.save();
-      },
-    },
-    addAnimal: {
-      type: AnimalType,
-      args: {
-        name: { type: GraphQLString },
-        age: { type: GraphQLFloat },
-        type: { type: AnimalTypeEnum },
-        breed: { type: GraphQLString },
-        gender: { type: AnimalGenderEnum },
-      },
-      resolve(parent, args) {
-        let _animal = new animal({
-          name: args.name,
-          age: args.age,
-          type: args.type,
-          breed: args.breed,
-          gender: args.gender,
-        });
-        return _animal.save();
+        return _announcement.save();
       },
     },
     setAdStatus: {

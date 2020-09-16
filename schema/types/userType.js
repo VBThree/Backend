@@ -1,5 +1,5 @@
 //model imports
-const ad = require("../../models/ad");
+const announcement = require("../../models/announcement");
 
 //graphql imports
 const graphql = require("graphql");
@@ -26,19 +26,19 @@ const UserType = new GraphQLObjectType({
     publishedCount: {
       type: GraphQLInt,
       async resolve(parent, args) {
-        return await ad.find({ createdBy: parent.id }).countDocuments()
+        return await announcement.find({ createdBy: parent.id }).countDocuments()
       }
     },
     resolvedCount: {
       type: GraphQLInt,
       async resolve(parent, args) {
-        return await ad.find({ attendantId: parent.id }).countDocuments()
+        return await announcement.find({ attendantId: parent.id }).countDocuments()
       }
     },
-    ads: {
-      type: new GraphQLList(require("./adType")),
+    announcements: {
+      type: new GraphQLList(require("./announcementType")),
       resolve(parent, args) {
-        return ad.find({ createdBy: parent.id });
+        return announcement.find({ createdBy: parent.id });
       },
     },
   }),
