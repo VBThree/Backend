@@ -42,7 +42,8 @@ const UserType = new GraphQLObjectType({
       },
     },
     resetToken: { type: GraphQLString },
-    expiryDate: { type: GraphQLString }
+    expiryDate: { type: GraphQLString },
+    photo: { type: GraphQLString }
   }),
 });
 

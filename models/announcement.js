@@ -33,7 +33,7 @@ const announcementSchema = new Schema({
       type: [Number]
     }
   },
-  
+  photo: String
 });
 
 announcementSchema.index({ location: "2dsphere" });
