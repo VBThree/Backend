@@ -13,7 +13,15 @@ const userSchema = new Schema({
         unique: true
     },
     birthday: Date,
-    rating: Number
+    rating: Number,
+    resetToken: {
+        type: String,
+        default: undefined
+    },
+    expiryDate: {
+        type: Date,
+        default: undefined
+    }
 })
 
 module.exports = mongoose.model("User", userSchema)

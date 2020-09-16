@@ -41,6 +41,8 @@ const UserType = new GraphQLObjectType({
         return announcement.find({ createdBy: parent.id });
       },
     },
+    resetToken: { type: GraphQLString },
+    expiryDate: { type: GraphQLString }
   }),
 });
 
