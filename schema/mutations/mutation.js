@@ -104,10 +104,25 @@ const Mutation = new GraphQLObjectType({
         });
         return _announcement.save();
       },
+    },
+    setAdStatus: {
+      type: GraphQLString,
+      args:{
+        id: { type: GraphQLID },
+        status: { type: StatusEnum }
+      },
+      async resolve(parent,args){
+        let done = await ad.findByIdAndUpdate(args.id, {"status": args.status})
+        console.log(done)
+        if(done){
+          return "Successfull";
+        }
+        else{
+          throw new Error("Something went wrong");
+        }
+      }
     }
   },
 });
-
-
 
 module.exports = Mutation;
