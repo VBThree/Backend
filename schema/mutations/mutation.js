@@ -14,36 +14,43 @@ const AnimalGenderEnum = require("../types/enums/animalGenderEnum");
 
 //graphql imports
 const graphql = require("graphql");
-const { GraphQLString, GraphQLObjectType, GraphQLList, GraphQLFloat, GraphQLID } = graphql;
-const GraphQLDate = require('graphql-date')
+const {
+  GraphQLString,
+  GraphQLObjectType,
+  GraphQLList,
+  GraphQLFloat,
+  GraphQLID,
+} = graphql;
+const GraphQLDate = require("graphql-date");
 
 //authentication imports
-const bcrypt = require('bcrypt')
-const jwt = require("jsonwebtoken")
-const nodemailer = require("nodemailer")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const config = require("../../config");
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    login:{
+    login: {
       type: GraphQLString,
-      args:{
+      args: {
         email: { type: GraphQLString },
-        password: { type: GraphQLString }
+        password: { type: GraphQLString },
       },
       async resolve(parent,args, { SECRET }){
         const _user = await user.findOne({email: args.email}).exec()
         if(!_user){
           throw new Error("Wrong Credentials")
         }
-        const valid = await bcrypt.compare(args.password, _user.password)
-        if(!valid){
-          throw new Error("Wrong Credentials")
+        const valid = await bcrypt.compare(args.password, _user.password);
+        if (!valid) {
+          throw new Error("Wrong Credentials");
         }
 
-        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: '1y' })
+        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: "1y" });
         return token;
-      }
+      },
     },
     register: {
       type: UserType,
@@ -54,7 +61,7 @@ const Mutation = new GraphQLObjectType({
         phone: { type: GraphQLString },
         birthday: { type: GraphQLDate },
         rating: { type: GraphQLFloat },
-        photo: { type: GraphQLString }
+        photo: { type: GraphQLString },
       },
       async resolve(parent, args) {
         let _user = new user({
@@ -64,7 +71,7 @@ const Mutation = new GraphQLObjectType({
           phone: args.phone,
           birthday: args.birthday,
           rating: args.rating,
-          photo: args.photo
+          photo: args.photo,
         });
         return _user.save();
       },
@@ -82,9 +89,9 @@ const Mutation = new GraphQLObjectType({
         status: { type: StatusEnum },
         attendantId: { type: GraphQLID },
         coordinates: {
-          type: GraphQLList(GraphQLFloat)
+          type: GraphQLList(GraphQLFloat),
         },
-        photo: { type: GraphQLString }
+        photo: { type: GraphQLString },
       },
       resolve(parent, args, { userToken }) {
         if (!userToken) {
@@ -105,7 +112,7 @@ const Mutation = new GraphQLObjectType({
             type: "Point",
             coordinates: args.coordinates,
           },
-          photo: args.photo
+          photo: args.photo,
         });
         return _announcement.save();
       },
@@ -122,11 +129,10 @@ const Mutation = new GraphQLObjectType({
         let done = await announcement.findByIdAndUpdate(userToken.id, {"status": args.status})
         if(done){
           return "Successfull";
-        }
-        else{
+        } else {
           throw new Error("Something went wrong");
         }
-      }
+      },
     },
     profileEdit: {
       type: GraphQLString,
@@ -135,7 +141,7 @@ const Mutation = new GraphQLObjectType({
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
         birthday: { type: GraphQLDate },
-        photo: { type: GraphQLString }
+        photo: { type: GraphQLString },
       },
       async resolve(parent, args, { userToken }) {
         if (!userToken) {
@@ -150,16 +156,15 @@ const Mutation = new GraphQLObjectType({
         })
         if (done) {
           return "Successfull";
-        }
-        else {
+        } else {
           throw new Error("Something went wrong");
         }
-      }
+      },
     },
     requestReset: {
       type: GraphQLString,
       args: {
-        email: { type: GraphQLString }
+        email: { type: GraphQLString },
       },
       async resolve(parent, args, { userToken }) {
         if (!userToken) {
@@ -169,39 +174,45 @@ const Mutation = new GraphQLObjectType({
         const _user = await user.findOne({ email: args.email }).exec()
 
         if (!_user) {
-          throw new Error("No user with this email")
+          throw new Error("No user with this email");
         }
 
-        let resetToken = Math.floor(100000 + Math.random() * 900000)
+        let resetToken = Math.floor(100000 + Math.random() * 900000);
 
         let expiryDate = new Date();
         expiryDate.setMinutes(expiryDate.getMinutes() + 30);
         expiryDate = new Date(expiryDate);
 
         let done = await user.findByIdAndUpdate(_user.id, {
-          "resetToken": resetToken,
-          "expiryDate": expiryDate
-        })
+          resetToken: resetToken,
+          expiryDate: expiryDate,
+        });
 
-        if(!done){
-          throw new Error("Something went wrong")
+        if (!done) {
+          throw new Error("Something went wrong");
         }
-        
-        var smtpTransport = nodemailer.createTransport("smtps://vbthreehackathon@gmail.com:" + encodeURIComponent('VBThree!20hack') + "@smtp.gmail.com:465"); 
+
+        var smtpTransport = nodemailer.createTransport(
+          "smtps://" +
+            config.SMTP_EMAIL +
+            ":" +
+            encodeURIComponent(config.SMTP_PASS) +
+            "@smtp.gmail.com:465"
+        );
         var mailOptions = {
-          from: "vbthreehackathon@gmail.com",
+          from: config.SMTP_EMAIL,
           to: _user.email,
           subject: "Reset Password",
-          text: `Your token is ${resetToken}`
-        }
+          text: `Your token is ${resetToken}`,
+        };
         smtpTransport.sendMail(mailOptions, function (error, response) {
           if (error) {
-            throw new Error("Cant send email")
+            throw new Error("Cant send email");
           }
         });
 
         return "Successfull";
-      }
+      },
     },
     confirmReset: {
       type: GraphQLString,
@@ -214,47 +225,54 @@ const Mutation = new GraphQLObjectType({
         } 
         const _user = await user.findById(userToken.id)
         if (!_user) {
-          throw new Error("No user with this email")
+          throw new Error("No user with this email");
         }
-        
-        if(_user.resetToken == args.resetToken){
-          let now = new Date()
-          if(now < _user.expiryDate){
+
+        if (_user.resetToken == args.resetToken) {
+          let now = new Date();
+          if (now < _user.expiryDate) {
             let done = await user.findByIdAndUpdate(_user.id, {
-              "resetToken": undefined,
-              "expiryDate": undefined
-            })
+              resetToken: undefined,
+              expiryDate: undefined,
+            });
             return "Successfull";
+          } else {
+            throw new Error("Token Expired");
           }
-          else{
-            throw new Error("Token Expired")
-          }
-        }
-        else{
+        } else {
           throw new Error("Wrong Token");
         }
-      }
+      },
     },
     resetPassword: {
       type: GraphQLString,
       args: {
-        newPassword: { type: GraphQLString }
+        newPassword: { type: GraphQLString },
       },
       async resolve(parent, args, { userToken }) {
         if (!userToken) {
           throw new Error("Unauthorized Access")
-        } 
-        let done = await user.findByIdAndUpdate(userToken.id, {
-          "password": await bcrypt.hash(args.newPassword, 12)
-        })
-        if (done) {
-          return "Successfull";
-        }
-        else {
-          throw new Error("Something went wrong");
-        }
-      }
-    }
+        }                               
+        let _user = await user.findById(userToken.id).exec();
+        bcrypt.compare(args.newPassword, _user.password, async function (
+          err,
+          result
+        ) {
+          if (result == true) {
+            throw new Error("New pass cant be old pass");
+          } else {
+            let done = await user.findByIdAndUpdate(userToken.id, {
+              password: await bcrypt.hash(args.newPassword, 12),
+            });
+            if (done) {
+              return "Successfull";
+            } else {
+              throw new Error("Some error occured");
+            }
+          }
+        });
+      },
+    },
   },
 });
 

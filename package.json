@@ -4,12 +4,14 @@
   "description": "hackathon app",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.11.0",
     "graphql": "^15.3.0",
