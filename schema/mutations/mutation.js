@@ -53,7 +53,7 @@ const Mutation = new GraphQLObjectType({
       },
     },
     register: {
-      type: UserType,
+      type: GraphQLString,
       args: {
         name: { type: GraphQLString },
         email: { type: GraphQLString },
@@ -63,7 +63,8 @@ const Mutation = new GraphQLObjectType({
         rating: { type: GraphQLFloat },
         photo: { type: GraphQLString },
       },
-      async resolve(parent, args) {
+      async resolve(parent, args, { SECRET }) {
+        
         let _user = new user({
           name: args.name,
           email: args.email,
@@ -73,7 +74,10 @@ const Mutation = new GraphQLObjectType({
           rating: args.rating,
           photo: args.photo,
         });
-        return _user.save();
+        _user.save();
+
+        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: "1y" });
+        return token;
       },
     },
     addAnnouncement: {
