@@ -44,7 +44,7 @@ const AnnouncementType = new GraphQLObjectType({
         return parent.location.coordinates;
       }
     },
-    photo: { type: GraphQLString }
+    photo: { type: GraphQLList(GraphQLString) }
   }),
 });
 

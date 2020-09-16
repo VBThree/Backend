@@ -91,7 +91,7 @@ const Mutation = new GraphQLObjectType({
         coordinates: {
           type: GraphQLList(GraphQLFloat),
         },
-        photo: { type: GraphQLString },
+        photo: { type: GraphQLList(GraphQLString) },
       },
       resolve(parent, args, { userToken }) {
         if (!userToken) {
