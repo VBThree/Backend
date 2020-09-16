@@ -98,11 +98,11 @@ const Mutation = new GraphQLObjectType({
         photo: { type: GraphQLList(GraphQLString) },
       },
       resolve(parent, args, { userToken }) {
-        if (!userToken) {
+/*         if (!userToken) {
           throw new Error("Unauthorized Access")
-        } 
+        }  */
         let _announcement = new announcement({
-          createdBy: userToken.id,
+          //createdBy: userToken.id,
           date: args.date,
           type: args.type,
           species: args.species,
