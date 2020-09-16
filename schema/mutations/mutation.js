@@ -169,6 +169,38 @@ const Mutation = new GraphQLObjectType({
         }
       },
     },
+    changePassword: {
+      type: GraphQLString,
+      args: {
+        oldPassword: { type: GraphQLString },
+        newPassword: { type: GraphQLString },
+      },
+      async resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        }
+
+        let _user = await user.findById(userToken.id).exec();
+
+        let valid = await bcrypt.compare(args.oldPassword, _user.password)
+
+        if(!valid){
+          throw new Error("Wrong Old Password")
+        }
+
+        let done = await user.findByIdAndUpdate(userToken.id, {
+          "password": await bcrypt.hash(args.newPassword, 12),
+        })
+
+        if (done) {
+          return "Password Successfully Changed";
+        } else {
+          throw new Error("Something went wrong");
+        }
+
+
+      },
+    },
     requestReset: {
       type: GraphQLString,
       args: {
