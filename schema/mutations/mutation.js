@@ -27,8 +27,8 @@ const GraphQLDate = require("graphql-date");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-
-const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD"; //openssl rand 256 | base64
+const config = require("../../config")
+const SECRET = config.SECRET; //openssl rand 256 | base64
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",

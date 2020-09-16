@@ -4,9 +4,9 @@ const { graphqlHTTP } = require("express-graphql")
 const app = express()
 
 const schema = require("./schema/schema")
-
+const config = require("./config")
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/hackathon', { useUnifiedTopology: true, useNewUrlParser: true });
+mongoose.connect(config.MONGODB_URI, { useUnifiedTopology: true, useNewUrlParser: true });
 
 mongoose.set('useCreateIndex', true);
 
