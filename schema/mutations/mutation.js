@@ -19,10 +19,36 @@ const graphql = require("graphql");
 const { GraphQLString, GraphQLObjectType, GraphQLList, GraphQLFloat, GraphQLID } = graphql;
 const GraphQLDate = require('graphql-date')
 
+//authentication imports
+const bcrypt = require('bcrypt')
+const jwt = require("jsonwebtoken")
+
+const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD" //openssl rand 256 | base64
+
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
-    addUser: {
+    login:{
+      type: GraphQLString,
+      args:{
+        email: { type: GraphQLString },
+        password: { type: GraphQLString }
+      },
+      async resolve(parent,args){
+        const _user = await user.findOne({email: args.email}).exec()
+        if(!_user){
+          throw new Error("Wrong Credentials")
+        }
+        const valid = await bcrypt.compare(args.password, _user.password)
+        if(!valid){
+          throw new Error("Wrong Credentials")
+        }
+
+        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: '1y' })
+        return token;
+      }
+    },
+    register: {
       type: UserType,
       args: {
         name: { type: GraphQLString },
@@ -32,12 +58,12 @@ const Mutation = new GraphQLObjectType({
         birthday: { type: GraphQLString },
         rating: { type: GraphQLFloat },
       },
-      resolve(parent, args) {
+      async resolve(parent, args) {
         let _user = new user({
           name: args.name,
           email: args.email,
           phone: args.phone,
-          password: args.password,
+          password: await bcrypt.hash(args.password,12),
           birthday: args.birthday,
           rating: args.rating,
         });
