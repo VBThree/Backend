@@ -56,6 +56,7 @@ const Mutation = new GraphQLObjectType({
         phone: { type: GraphQLString },
         birthday: { type: GraphQLDate },
         rating: { type: GraphQLFloat },
+        photo: { type: GraphQLString }
       },
       async resolve(parent, args) {
         let _user = new user({
@@ -65,6 +66,7 @@ const Mutation = new GraphQLObjectType({
           phone: args.phone,
           birthday: args.birthday,
           rating: args.rating,
+          photo: args.photo
         });
         return _user.save();
       },
@@ -84,7 +86,8 @@ const Mutation = new GraphQLObjectType({
         attendantId: { type: GraphQLID },
         coordinates: {
           type: GraphQLList(GraphQLFloat)
-        }
+        },
+        photo: { type: GraphQLString }
       },
       resolve(parent, args) {
         let _announcement = new announcement({
@@ -102,6 +105,7 @@ const Mutation = new GraphQLObjectType({
             type: "Point",
             coordinates: args.coordinates,
           },
+          photo: args.photo
         });
         return _announcement.save();
       },
@@ -129,14 +133,16 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
-        birthday: { type: GraphQLDate }
+        birthday: { type: GraphQLDate },
+        photo: { type: GraphQLString }
       },
       async resolve(parent, args) {
         let done = await user.findByIdAndUpdate(args.id, {
           "name": args.name,
           "phone": args.phone,
           "email": args.email,
-          "birthday": args.birthday
+          "birthday": args.birthday,
+          "photo": args.photo
         })
         if (done) {
           return "Successfull";

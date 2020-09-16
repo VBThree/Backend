@@ -21,7 +21,8 @@ const userSchema = new Schema({
     expiryDate: {
         type: Date,
         default: undefined
-    }
+    },
+    photo: String
 })
 
 module.exports = mongoose.model("User", userSchema)
