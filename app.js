@@ -1,5 +1,6 @@
 const express = require("express")
 const { graphqlHTTP } = require("express-graphql")
+const jwt = require("jsonwebtoken")
 
 const app = express()
 
@@ -14,9 +15,29 @@ mongoose.connection.once("open", () => {
     console.log("connected to database")
 })
 
-app.use("/graphql", graphqlHTTP({
+const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD"
+
+const auth = async (req) => {
+    const token = req.headers.authorization
+    try {
+        const userToken = await jwt.verify(token, SECRET)
+        req.userToken = userToken
+    } catch (error) {
+        console.log(error)
+    }
+
+    req.next()
+}
+
+app.use(auth)
+
+app.use("/graphql", graphqlHTTP(req =>({
     schema,
-    graphiql: true  
-}))
+    context: {
+        SECRET,
+        userToken: req.userToken
+    },
+    graphiql: true
+})))
 
 app.listen(3000, () => console.log("server started"))

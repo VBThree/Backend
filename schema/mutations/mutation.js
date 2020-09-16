@@ -22,8 +22,6 @@ const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
 const nodemailer = require("nodemailer")
 
-const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD" //openssl rand 256 | base64
-
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
   fields: {
@@ -33,7 +31,7 @@ const Mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString }
       },
-      async resolve(parent,args){
+      async resolve(parent,args, { SECRET }){
         const _user = await user.findOne({email: args.email}).exec()
         if(!_user){
           throw new Error("Wrong Credentials")
@@ -74,7 +72,6 @@ const Mutation = new GraphQLObjectType({
     addAnnouncement: {
       type: AnnouncementType,
       args: {
-        createdBy: { type: GraphQLID },
         date: { type: GraphQLDate },
         type: { type: AnnouncementTypeEnum },
         species: { type: AnimalSpeciesEnum },
@@ -89,9 +86,12 @@ const Mutation = new GraphQLObjectType({
         },
         photo: { type: GraphQLString }
       },
-      resolve(parent, args) {
+      resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
         let _announcement = new announcement({
-          createdBy: args.createdBy,
+          createdBy: userToken.id,
           date: args.date,
           type: args.type,
           species: args.species,
@@ -113,11 +113,13 @@ const Mutation = new GraphQLObjectType({
     setAnnouncementStatus: {
       type: GraphQLString,
       args:{
-        id: { type: GraphQLID },
         status: { type: StatusEnum }
       },
-      async resolve(parent,args){
-        let done = await announcement.findByIdAndUpdate(args.id, {"status": args.status})
+      async resolve(parent,args, { userToken }){
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
+        let done = await announcement.findByIdAndUpdate(userToken.id, {"status": args.status})
         if(done){
           return "Successfull";
         }
@@ -129,15 +131,17 @@ const Mutation = new GraphQLObjectType({
     profileEdit: {
       type: GraphQLString,
       args: {
-        id: { type: GraphQLID },
         name: { type: GraphQLString },
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
         birthday: { type: GraphQLDate },
         photo: { type: GraphQLString }
       },
-      async resolve(parent, args) {
-        let done = await user.findByIdAndUpdate(args.id, {
+      async resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
+        let done = await user.findByIdAndUpdate(userToken.id, {
           "name": args.name,
           "phone": args.phone,
           "email": args.email,
@@ -157,7 +161,11 @@ const Mutation = new GraphQLObjectType({
       args: {
         email: { type: GraphQLString }
       },
-      async resolve(parent, args) {
+      async resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
+
         const _user = await user.findOne({ email: args.email }).exec()
 
         if (!_user) {
@@ -198,11 +206,13 @@ const Mutation = new GraphQLObjectType({
     confirmReset: {
       type: GraphQLString,
       args: {
-        email: { type: GraphQLString },
         resetToken: { type: GraphQLString }
       },
-      async resolve(parent, args) {
-        const _user = await user.findOne({ email: args.email }).exec()
+      async resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
+        const _user = await user.findById(userToken.id)
         if (!_user) {
           throw new Error("No user with this email")
         }
@@ -228,11 +238,13 @@ const Mutation = new GraphQLObjectType({
     resetPassword: {
       type: GraphQLString,
       args: {
-        id: { type: GraphQLID },
         newPassword: { type: GraphQLString }
       },
-      async resolve(parent, args) {
-        let done = await user.findByIdAndUpdate(args.id, {
+      async resolve(parent, args, { userToken }) {
+        if (!userToken) {
+          throw new Error("Unauthorized Access")
+        } 
+        let done = await user.findByIdAndUpdate(userToken.id, {
           "password": await bcrypt.hash(args.newPassword, 12)
         })
         if (done) {
