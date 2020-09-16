@@ -105,15 +105,14 @@ const Mutation = new GraphQLObjectType({
         return _announcement.save();
       },
     },
-    setAdStatus: {
+    setAnnouncementStatus: {
       type: GraphQLString,
       args:{
         id: { type: GraphQLID },
         status: { type: StatusEnum }
       },
       async resolve(parent,args){
-        let done = await ad.findByIdAndUpdate(args.id, {"status": args.status})
-        console.log(done)
+        let done = await announcement.findByIdAndUpdate(args.id, {"status": args.status})
         if(done){
           return "Successfull";
         }
