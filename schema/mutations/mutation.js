@@ -20,6 +20,7 @@ const GraphQLDate = require('graphql-date')
 //authentication imports
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer")
 
 const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD" //openssl rand 256 | base64
 
@@ -171,13 +172,19 @@ const Mutation = new GraphQLObjectType({
         if(!done){
           throw new Error("Something went wrong")
         }
-
-        // const mailRes = await transport.sendMail({
-        //   from: process.env.MAIL_SENDER,
-        //   to: _user.email,
-        //   subject: "Your Password Reset Token",
-        //   html: `<h1>${resetToken}</h1>`
-        // });
+        
+        var smtpTransport = nodemailer.createTransport("smtps://vbthreehackathon@gmail.com:" + encodeURIComponent('VBThree!20hack') + "@smtp.gmail.com:465"); 
+        var mailOptions = {
+          from: "vbthreehackathon@gmail.com",
+          to: _user.email,
+          subject: "Reset Password",
+          text: `Your token is ${resetToken}`
+        }
+        smtpTransport.sendMail(mailOptions, function (error, response) {
+          if (error) {
+            throw new Error("Cant send email")
+          }
+        });
 
         return "Successfull";
       }
