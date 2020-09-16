@@ -120,6 +120,30 @@ const Mutation = new GraphQLObjectType({
           throw new Error("Something went wrong");
         }
       }
+    },
+    profileEdit: {
+      type: GraphQLString,
+      args: {
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        email: { type: GraphQLString },
+        birthday: { type: GraphQLDate }
+      },
+      async resolve(parent, args) {
+        let done = await user.findByIdAndUpdate(args.id, {
+          "name": args.name,
+          "phone": args.phone,
+          "email": args.email,
+          "birthday": args.birthday
+        })
+        if (done) {
+          return "Successfull";
+        }
+        else {
+          throw new Error("Something went wrong");
+        }
+      }
     }
   },
 });
