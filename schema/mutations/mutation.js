@@ -20,6 +20,7 @@ const GraphQLDate = require('graphql-date')
 //authentication imports
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
+const nodemailer = require("nodemailer")
 
 const SECRET = "KHPChRl/8aDlXMCRuwnchB/xFu/SFJgV7hgA4/cQLvyZ1yUpSFXHFD" //openssl rand 256 | base64
 
@@ -136,6 +137,97 @@ const Mutation = new GraphQLObjectType({
           "phone": args.phone,
           "email": args.email,
           "birthday": args.birthday
+        })
+        if (done) {
+          return "Successfull";
+        }
+        else {
+          throw new Error("Something went wrong");
+        }
+      }
+    },
+    requestReset: {
+      type: GraphQLString,
+      args: {
+        email: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        const _user = await user.findOne({ email: args.email }).exec()
+
+        if (!_user) {
+          throw new Error("No user with this email")
+        }
+
+        let resetToken = Math.floor(100000 + Math.random() * 900000)
+
+        let expiryDate = new Date();
+        expiryDate.setMinutes(expiryDate.getMinutes() + 30);
+        expiryDate = new Date(expiryDate);
+
+        let done = await user.findByIdAndUpdate(_user.id, {
+          "resetToken": resetToken,
+          "expiryDate": expiryDate
+        })
+
+        if(!done){
+          throw new Error("Something went wrong")
+        }
+        
+        var smtpTransport = nodemailer.createTransport("smtps://vbthreehackathon@gmail.com:" + encodeURIComponent('VBThree!20hack') + "@smtp.gmail.com:465"); 
+        var mailOptions = {
+          from: "vbthreehackathon@gmail.com",
+          to: _user.email,
+          subject: "Reset Password",
+          text: `Your token is ${resetToken}`
+        }
+        smtpTransport.sendMail(mailOptions, function (error, response) {
+          if (error) {
+            throw new Error("Cant send email")
+          }
+        });
+
+        return "Successfull";
+      }
+    },
+    confirmReset: {
+      type: GraphQLString,
+      args: {
+        email: { type: GraphQLString },
+        resetToken: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        const _user = await user.findOne({ email: args.email }).exec()
+        if (!_user) {
+          throw new Error("No user with this email")
+        }
+        
+        if(_user.resetToken == args.resetToken){
+          let now = new Date()
+          if(now < _user.expiryDate){
+            let done = await user.findByIdAndUpdate(_user.id, {
+              "resetToken": undefined,
+              "expiryDate": undefined
+            })
+            return "Successfull";
+          }
+          else{
+            throw new Error("Token Expired")
+          }
+        }
+        else{
+          throw new Error("Wrong Token");
+        }
+      }
+    },
+    resetPassword: {
+      type: GraphQLString,
+      args: {
+        id: { type: GraphQLID },
+        newPassword: { type: GraphQLString }
+      },
+      async resolve(parent, args) {
+        let done = await user.findByIdAndUpdate(args.id, {
+          "password": await bcrypt.hash(args.newPassword, 12)
         })
         if (done) {
           return "Successfull";
