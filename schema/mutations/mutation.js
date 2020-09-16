@@ -120,13 +120,17 @@ const Mutation = new GraphQLObjectType({
     setAnnouncementStatus: {
       type: GraphQLString,
       args:{
+        id: { type: GraphQLID },
         status: { type: StatusEnum }
       },
       async resolve(parent,args, { userToken }){
         if (!userToken) {
           throw new Error("Unauthorized Access")
         } 
-        let done = await announcement.findByIdAndUpdate(userToken.id, {"status": args.status})
+        let done = await announcement.findByIdAndUpdate(args.id, {
+          "attendantId": userToken.id,
+          "status": args.status
+        })
         if(done){
           return "Successfull";
         } else {
