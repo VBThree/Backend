@@ -279,25 +279,23 @@ const Mutation = new GraphQLObjectType({
           throw new Error("Wrong Token");
         }
 
-        bcrypt.compare(args.newPassword, _user.password, async function (
-          err,
-          result
-        ) {
-          if (result == true) {
-            throw new Error("New pass cant be old pass");
-          } else {
-            let done = await user.findByIdAndUpdate(_user.id, {
-              password: await bcrypt.hash(args.newPassword, 12),
-              resetToken: undefined,
-              expiryDate: undefined,
-            });
-            if (done) {
-              return "Successfull";
-            } else {
-              throw new Error("Some error occured");
-            }
-          }
+        let result = await bcrypt.compare(args.newPassword, _user.password) 
+
+        if(result){
+          throw new Error("Cant be old password");
+        }
+
+        let done = await user.findByIdAndUpdate(_user.id, {
+          password: await bcrypt.hash(args.newPassword, 12),
+          resetToken: undefined,
+          expiryDate: undefined,
         });
+        
+        if (!done) {
+          throw new Error("Some error occured");
+        }
+
+        return "Successfull";
       },
     },
   },
