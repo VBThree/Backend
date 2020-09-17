@@ -19,7 +19,7 @@ Before you continue, ensure you have met the following requirements:
 
 ## Install
 
-Installing processes of our project is simple. After clonning this repository, just run the following command. 
+Installing processes of our project is simple. After cloning this repository, just run the following command. 
 
 ```sh
 npm install
