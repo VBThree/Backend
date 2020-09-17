@@ -24,7 +24,7 @@ const AnnouncementType = new GraphQLObjectType({
         return user.findById(parent.createdBy);
       },
     },
-    date: { type: GraphQLDate },
+    date: { type: GraphQLString },
     type: { type: AnnouncementTypeEnum },
     species: { type: AnimalSpeciesEnum },
     gender: { type: AnimalGenderEnum },

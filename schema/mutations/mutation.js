@@ -59,7 +59,7 @@ const Mutation = new GraphQLObjectType({
         email: { type: GraphQLString },
         password: { type: GraphQLString },
         phone: { type: GraphQLString },
-        birthday: { type: GraphQLDate },
+        birthday: { type: GraphQLString },
         rating: { type: GraphQLFloat },
         photo: { type: GraphQLString },
       },
@@ -82,7 +82,7 @@ const Mutation = new GraphQLObjectType({
     addAnnouncement: {
       type: AnnouncementType,
       args: {
-        date: { type: GraphQLDate },
+        date: { type: GraphQLString },
         type: { type: AnnouncementTypeEnum },
         species: { type: AnimalSpeciesEnum },
         gender: { type: AnimalGenderEnum },
@@ -147,7 +147,7 @@ const Mutation = new GraphQLObjectType({
         name: { type: GraphQLString },
         phone: { type: GraphQLString },
         email: { type: GraphQLString },
-        birthday: { type: GraphQLDate },
+        birthday: { type: GraphQLString },
         photo: { type: GraphQLString },
       },
       async resolve(parent, args, { userToken }) {

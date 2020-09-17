@@ -21,7 +21,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     phone: { type: GraphQLString },
     password: { type: GraphQLString },
-    birthday: { type: GraphQLDate },
+    birthday: { type: GraphQLString },
     rating: { type: GraphQLFloat },
     publishedCount: {
       type: GraphQLInt,
