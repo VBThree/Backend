@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const announcementSchema = new Schema({
   createdBy: mongoose.SchemaTypes.ObjectId,
-  date: Date,
+  date: String,
   type: {
     type: String,
     enum: ["Lost", "Food", "Ownership", "Vaccination"],

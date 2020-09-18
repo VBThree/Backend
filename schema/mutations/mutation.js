@@ -64,6 +64,11 @@ const Mutation = new GraphQLObjectType({
         photo: { type: GraphQLString },
       },
       async resolve(parent, args, { SECRET }) {
+
+        if(args.name == "" || args.email == "" || args.password == "" || args.phone == "" || args.birthday == ""){
+            throw new Error("Fill all fields");
+        }
+
         let _user = new user({
           name: args.name,
           email: args.email,
@@ -73,10 +78,14 @@ const Mutation = new GraphQLObjectType({
           rating: args.rating,
           photo: args.photo,
         });
-        _user.save();
 
-        const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: "1y" });
-        return token;
+        try {
+          await _user.save();
+          const token = jwt.sign({ id: _user.id }, SECRET, { expiresIn: "1y" });
+          return token;
+        } catch (error) {
+          throw new Error(error);
+        }
       },
     },
     addAnnouncement: {
